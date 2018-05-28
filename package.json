@@ -1,0 +1,9 @@
+{
+  "name": "nw-demo",
+  "version": "0.0.1",
+  "main": "index.html",
+  "chromium-args" : "--enable-webgl --ignore-gpu-blacklist",
+  "window": {
+    "frame": false
+  }
+}
