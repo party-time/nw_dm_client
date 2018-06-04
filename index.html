@@ -3,23 +3,50 @@
   <head>
     <meta charset="utf-8">
     <link href="./dm.css" rel="stylesheet">
+    <script src="./config.js"></script>
     <script src="./dm.js"></script>
     <script src="./jquery.min.js"></script>
+    <script src="./reconnecting-websocket.min.js"></script>
+    <script src="./init.js"></script>
+    <script src="./log.js"></script>
+    <script src="./schedule.js"></script>
   </head>
   <body>
-    <div class="container">
-      <p>xinpureZhu</p>
-    </div>
+
   </body>
 </html>
 <script>
-  /**
   var gui = require('nw.gui');
   var win = gui.Window.get();
   win.setAlwaysOnTop(true);
   win.enterFullscreen();
-  **/
+
+  readConfig(function(){
+    initDmClient();
+  });
+
+  downloadResourceSchedule();
+
+
   //getDanmu();
   //playVideo();
-  bling();
+  //bling();
+
+
+  /*
+  var item={
+       img:'', //图片
+       info: '这是一个测试测试阿斯顿发送到发送到发', //文字
+       href:'', //链接
+       close:true, //显示关闭按钮
+       speed:10, //延迟,单位秒,默认6
+       bottom:0, //距离底部高度,单位px,默认随机
+       color:'#fff', //颜色,默认白色
+       old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
+  }
+  barrager(item,function(){
+    console.log('currentDmCount:'+currentDmCount);
+  });
+  */
+
 </script>

@@ -1,7 +1,24 @@
+//当前屏幕弹幕数量
+var currentDmCount=0;
+
+//当前弹幕的底边
+var currentDmBottom=-12345;
+
+//活动开始时间
+var dm_partyTime;
+//电影开始时间
+var dm_movieTime;
+
+//正在进行的活动
+var dm_partyId;
+
+var dm_currentParty;
+
+
 /**
 *弹幕使用
 **/
-var barrager = function(barrage){
+var barrager = function(barrage,removeCallBack){
     barrage = $.extend({
       close:true,
       bottom: 0,
@@ -15,9 +32,16 @@ var barrager = function(barrage){
     var id = '#' + barrager_id;
     var div_barrager = $("<div class='barrage' id='" + barrager_id + "'></div>").appendTo($('body'));
 
-    var window_height = $(window).height() - 100;
-    var bottom = (barrage.bottom == 0) ? Math.floor(Math.random() * window_height + 40) : barrage.bottom;
+    //var bottom = (barrage.bottom == 0) ? Math.floor(Math.random() * window_height + 40) : barrage.bottom;
+    var bottom = dmBottom();
     div_barrager.css("bottom", bottom + "px");
+
+    if(_show =='r'){
+        div_barrager.css('right','-500px');
+    }else if(_show == 'l'){
+        div_barrager.css('left','-500px');
+    }
+
     div_barrager_box = $("<div class='barrage_box cl'></div>").appendTo(div_barrager);
     if(barrage.img){
         div_barrager_box.append("<a class='portrait z' href='javascript:;'></a>");
@@ -26,50 +50,76 @@ var barrager = function(barrage){
     }
 
     div_barrager_box.append(" <div class='p'></div>");
-    if(barrage.close){
-        div_barrager_box.append(" <div class='close z'></div>");
-    }
+    var content = $("<p></p>").appendTo(id + " .barrage_box .p");
+    content.append(barrage.info);
 
-    var content = $("<a title='' href='' target='_blank'></a>").appendTo(id + " .barrage_box .p");
-    content.attr({
-        'href': barrage.href,
-        'id': barrage.id
-    }).empty().append(barrage.info);
+
     if(navigator.userAgent.indexOf("MSIE 6.0")>0  ||  navigator.userAgent.indexOf("MSIE 7.0")>0 ||  navigator.userAgent.indexOf("MSIE 8.0")>0  ){
         content.css('color', barrage.old_ie_color);
     }else{
         content.css('color', barrage.color);
     }
 
+    content.css('font-size',_fontSize);
+    var pWidth = barrage.info.length * _fontSize;
+    content.css('width',pWidth);
+
+    ++currentDmCount;
+
     var i = 0;
     div_barrager.css('margin-right', i);
     var looper = setInterval(barrager, barrage.speed);
+
     function barrager() {
-        var window_width = $(window).width() + 500;
+        var window_width = $(window).width() + pWidth;
         if (i < window_width) {
             i += 1;
-            $(id).css('margin-right', i);
+            if(_show =='r'){
+                $(id).css('margin-right', i);
+            }else{
+                $(id).css('margin-left', i);
+            }
         } else {
             $(id).remove();
+            --currentDmCount;
+            if( currentDmCount<0){
+                currentDmCount =0;
+            }
+            clearInterval(looper);
+            if( removeCallBack ){
+                removeCallBack();
+            }
             return false;
         }
     }
+}
 
-    div_barrager_box.mouseover(function() {
-        clearInterval(looper);
-    });
+//计算弹幕的高度
+var dmBottom = function(){
+    var window_height = $(window).height() - 100;
+    if( currentDmBottom == -12345 ){
+        if(_topShow){
+            currentDmBottom = window_height;
+        }else{
+            currentDmBottom = 0;
+        }
+    }else{
+        if(_topShow){
+            currentDmBottom = currentDmBottom - _fontSize;
+            if( currentDmBottom < 0 ){
+                currentDmBottom = window_height;
+            }
+        }else{
+            currentDmBottom = currentDmBottom + _fontSize;
+            if( currentDmBottom > window_height ){
+                currentDmBottom = 0;
+            }
+        }
+    }
+    return currentDmBottom;
+}
 
-    div_barrager_box.mouseout(function() {
-        looper = setInterval(barrager, barrage.speed);
-    });
 
-    $(id+'.barrage .barrage_box .close').click(function(){
-
-        $(id).remove();
-
-    })
-
- }
 
 /**
 *ajax获取弹幕使用
@@ -79,7 +129,6 @@ var getDanmu = function(){
         url: "http://www.party-time.cn/v1/api/javaClient/findHistoryDanmu?partyId=5ad7ef2c91289c1be33698c0&count=300&id=",
         type: "get"
     }).done(function (data) {
-
         if (data.result == 200 || data.result == 403) {
             var itemList = new Array();
             for(var i=0;i<data.data.length;i++){
@@ -145,6 +194,109 @@ var bling = function(){
 
     },1000);
 }
+
+
+var timerDm = function(partyId,num){
+    var fs = require("fs");
+    var timerDmPath = _timerDanmuPath+'/'+partyId;
+    var timerDmFilePath = timerDmPath + '/' + partyId + '_'+num+'.json';
+    fs.readFile(timerDmFilePath,'utf-8',function(err, data) {
+        if( err ){
+            writelog(err);
+        }else{
+            var schedule = require("node-schedule");
+            schedule.scheduleJob('*/1 * * * * *', function(){
+                var objectList = JSON.parse(data);
+                var i=0;
+                var now = new Date();
+                if( now.getTime() - movieStartTime.getTime() == objectList[i].beginTime){
+                    sendDm(objectList[i],true);
+                    ++i;
+                }
+            });
+        }
+    });
+
+}
+
+
+var sendDm = function(object , isTimer){
+    if (object.type == 'pDanmu') {
+        var speed = _dmspeed;
+        if(object.data.message.length>10){
+            speed = 10*speed + 5;
+        }else{
+            speed = 10*speed - 5;
+        }
+        var item={
+             img:'', //图片
+             info: object.data.message, //文字
+             href:'', //链接
+             close:false, //显示关闭按钮
+             speed:speed, //延迟,单位秒,默认6
+             bottom:0, //距离底部高度,单位px,默认随机
+             color:object.data.color.replace('0x','#'), //颜色,默认白色
+             old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
+        }
+        dmws.send('{"type":"danmucount","clientType":"0","code":"'+getCode()+'","partyId":"5afa97b9e6e9b82681bcb53e","data":'+currentDmCount+'}');
+        barrager(item,function(){
+            dmws.send('{"type":"danmucount","clientType":"0","code":"'+getCode()+'","partyId":"5afa97b9e6e9b82681bcb53e","data":'+currentDmCount+'}');
+        });
+    }else if( object.type == 'command'){
+        //确认活动正常开始后发出
+        if(object.data.type == 'partyStatus'){
+            dm_partyId = object.data.partyId;
+            if(object.data.partyTime){
+                dm_partyTime = object.data.partyTime;
+            }
+            if(object.data.movieTime){
+                dm_movieTime = object.data.movieTime;
+            }
+            //活动开始
+            if(object.data.status == 1){
+                dm_currentParty = getParty();
+            }else if(object.data.status == 2){//电影开始
+                //加载定时弹幕
+                timerDm(dm_partyId,1);
+            }
+        }
+        dmws.send(JSON.stringify(object));
+    }else if( object.type == 'expression' ){
+        var expressionId = '';
+        if(isTimer){
+            expressionId = object.data.expression;
+        }else{
+            expressionId = object.data.idd;
+        }
+
+        var expressionUrl = '';
+        for(var i=0;i<dm_currentParty.expressions.length;i++){
+            if(dm_currentParty.expressions[i].id == expressionId){
+                expressionUrl = dm_currentParty.expressions[i].url;
+            }
+        }
+        var item={
+             img:expressionUrl, //图片
+             info: '', //文字
+             href:'', //链接
+             close:false, //显示关闭按钮
+             speed:speed, //延迟,单位秒,默认6
+             bottom:0, //距离底部高度,单位px,默认随机
+             color:object.data.color.replace('0x','#'), //颜色,默认白色
+             old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
+        }
+        barrager(item);
+
+    }else if( object.type == 'bling' ){
+
+    }else if( object.type == 'opDanmu' ){
+
+    }else if( object.type == 'vedio' ){
+
+    }
+
+}
+
 
 
 
