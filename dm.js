@@ -14,6 +14,8 @@ var dm_partyId;
 
 var dm_currentParty;
 
+var isInitCss3 = false;
+
 
 /**
 *弹幕使用
@@ -105,46 +107,57 @@ var barrager = function(barrage,removeCallBack){
 }
 
 //计算弹幕的高度
-var dmBottom = function(){
+var dmBottom = function(isImg){
     var window_height = $(window).height() - 100;
-    if( currentDmBottom == -12345 ){
-        if(_topShow){
-            currentDmBottom = window_height;
-        }else{
-            currentDmBottom = 0;
-        }
+    if(isImg){
+
+
+
     }else{
-        if(_topShow){
-            currentDmBottom = currentDmBottom - _fontSize;
-            if( currentDmBottom < 0 ){
+        if( currentDmBottom == -12345 ){
+            if(_topShow){
                 currentDmBottom = window_height;
+            }else{
+                currentDmBottom = 0;
             }
         }else{
-            currentDmBottom = currentDmBottom + _fontSize;
-            if( currentDmBottom > window_height ){
-                currentDmBottom = 0;
+            if(_topShow){
+                currentDmBottom = currentDmBottom - _fontSize;
+                if( currentDmBottom < 0 ){
+                    currentDmBottom = window_height;
+                }
+            }else{
+                currentDmBottom = currentDmBottom + _fontSize;
+                if( currentDmBottom > window_height ){
+                    currentDmBottom = 0;
+                }
             }
         }
     }
+
     return currentDmBottom;
 }
 
 
 var initCss3Barrager = function(){
-  let style = document.createElement('style');
-  var heads = document.getElementsByTagName("head");
-  if(heads.length)
-    heads[0].appendChild(style);
-  else
-    document.documentElement.appendChild(style);
-    let width = window.innerWidth;
-    if(_show =='r'){
-        style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
-        style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
-    }else if(_show == 'l'){
-        style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
-        style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
+    if(!isInitCss3){
+        let style = document.createElement('style');
+        var heads = document.getElementsByTagName("head");
+        if(heads.length)
+        heads[0].appendChild(style);
+        else
+        document.documentElement.appendChild(style);
+        let width = window.innerWidth;
+        if(_show =='r'){
+            style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
+            style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
+        }else if(_show == 'l'){
+            style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
+            style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
+        }
+        isInitCss3=true;
     }
+
 }
 
 //css3弹幕
@@ -158,7 +171,7 @@ var css3Barrager = function(barrage,removeCallBack){
     }
 
     var className = 'danmu';
-     if(barrager.isOpDanmu){
+     if(barrage.isOpDanmu){
         className='opDanmu';
      }
 
@@ -245,13 +258,6 @@ var drawDm = function(object , isTimer){
     initCss3Barrager();
     if (object.type == 'pDanmu') {
         var speed = _dmspeed;
-        /*
-        if(object.data.message.length>10){
-            speed = 20*(1-_dmspeed) + 5;
-        }else{
-            speed = 20*(1-_dmspeed);
-        }
-        */
         var item={
              img:'', //图片
              info: object.data.message, //文字
@@ -266,26 +272,6 @@ var drawDm = function(object , isTimer){
         css3Barrager(item,function(){
             dmws.send('{"type":"danmucount","clientType":"0","code":"'+getCode()+'","partyId":"5afa97b9e6e9b82681bcb53e","data":'+currentDmCount+'}');
         });
-    }else if( object.type == 'command'){
-        //确认活动正常开始后发出
-        if(object.data.type == 'partyStatus'){
-            dm_partyId = object.data.partyId;
-            if(object.data.partyTime){
-                dm_partyTime = object.data.partyTime;
-            }
-            if(object.data.movieTime){
-                dm_movieTime = object.data.movieTime;
-            }
-            //活动开始
-            if(object.data.status == 1){
-                dm_currentParty = getParty(object.data.partyId);
-                writelog('dm_currentParty:'+dm_currentParty);
-            }else if(object.data.status == 2){//电影开始
-                //加载定时弹幕
-                timerDm(dm_partyId,1);
-            }
-        }
-        dmws.send(JSON.stringify(object));
     }else if( object.type == 'expression' ){
         writelog('expression');
         var expressionId = '';
@@ -296,7 +282,6 @@ var drawDm = function(object , isTimer){
         }
 
         writelog('expressionId:'+expressionId);
-
         var expressionUrl = '';
         writelog(JSON.stringify(dm_currentParty));
         for(var i=0;i<dm_currentParty.expressions.length;i++){
@@ -315,7 +300,7 @@ var drawDm = function(object , isTimer){
              color:'', //颜色,默认白色
              old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
         }
-        barrager(item);
+        css3Barrager(item);
 
     }else if( object.type == 'bling' ){
 
@@ -331,7 +316,7 @@ var drawDm = function(object , isTimer){
              old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
              isOpDanmu:true
         }
-        barrager(item);
+        css3Barrager(item);
 
     }else if( object.type == 'vedio' ){
         var videoId = object.data.idd;

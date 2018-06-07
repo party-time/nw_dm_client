@@ -107,14 +107,18 @@ var getSocketIp = function(){
 
 
 var createSocket = function(ip,port){
-    var wsUri = 'ws://' + ip + ':' + port + '/ws?code='+getCode()+'&clientType=0';
+    var wsUri = 'ws://' + ip + ':' + port + '/ws?code='+getCode()+'&clientType='+_clientType;
     dmws = new ReconnectingWebSocket(wsUri);
 
     dmws.onopen = function (evt) {
         //心跳检测
         setInterval(function () {
-            dmws.send('{"type":"ping","clientType":0,"code":"'+getCode()+'"}');
+            dmws.send('{"type":"ping","clientType":'+_clientType+',"code":"'+getCode()+'"}');
         }, 10000);
+
+        //当与服务器建立连接后，启动本地socker server
+        writelog('createSocket connect local socket server');
+        startLocalSocketServer();
     };
 
     dmws.onclose = function (evt) {
@@ -123,7 +127,33 @@ var createSocket = function(ip,port){
 
     dmws.onmessage = function (evt) {
         var object = JSON.parse(evt.data);
-        drawDm(object,false);
+        if(object.type == 'command'){
+             //确认活动正常开始后发出
+            if(object.data.type == 'partyStatus'){
+                dm_partyId = object.data.partyId;
+                if(object.data.partyTime){
+                    dm_partyTime = object.data.partyTime;
+                }
+                if(object.data.movieTime){
+                    dm_movieTime = object.data.movieTime;
+                }
+                //活动开始
+                if(object.data.status == 1){
+                    dm_currentParty = getParty(object.data.partyId);
+                    writelog('dm_currentParty:'+dm_currentParty);
+                }else if(object.data.status == 2){//电影开始
+                    //加载定时弹幕
+                    timerDm(dm_partyId,1);
+                }
+            }
+            dmws.send(JSON.stringify(object));
+        }else if(object.type == 'clientInfo'){
+            //获取本地其他node客户端列表
+            getLocalServerList();
+        }else{
+            drawDm(object,false);
+        }
+
     };
 }
 
@@ -138,20 +168,6 @@ var rsyncResourceFile = function(){
       console.log(`stdout: ${stdout}`);
       console.log(`stderr: ${stderr}`);
     });
-}
-
-//获取本地ip
-var getLocalIp = function(){
-    var os=require('os'),
-        iptable={},
-        ifaces=os.networkInterfaces();
-    for (var dev in ifaces) {
-      ifaces[dev].forEach(function(details,alias){
-        if (details.family=='IPv4' && details.address !== '127.0.0.1' && !alias.internal ) {
-            return details.address;
-        }
-      });
-    }
 }
 
 

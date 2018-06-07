@@ -87,7 +87,7 @@ video{
     font-family: 黑体;
     opacity: 0.75;
     text-shadow: rgb(0, 0, 0) 1px 1px 2px;
-    animation: danmu 3s linear 0s 1;
+    animation: opDanmu 3s linear 0s 1;
     left: 0;
     visibility: hidden;
 }

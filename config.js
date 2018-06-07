@@ -5,6 +5,9 @@ var _proIp = '47.93.81.21';
 var _testIp = '101.201.80.206';
 var rsyncIp;
 
+//客户端类型
+var _clientType = 3;
+
 var configPath = './config';
 
 //基本资源文件的路径
@@ -52,6 +55,9 @@ var _screenMove = false;
 //屏幕分辨率
 var _screenRect;
 
+//屏幕编号
+var _screen;
+
 
 var readConfig = function( callBack ){
     var fs = require("fs");
@@ -63,7 +69,7 @@ var readConfig = function( callBack ){
         }else{
             //var texts = iconv.decode(data, 'gbk');
             initConfigParam(data,callBack);
-            writelog(data);
+            //writelog(data);
         }
 
     });
@@ -90,6 +96,8 @@ var initConfigParam = function(texts,callBack){
     _screenMove = object.screenMove;
 
     _screenRect = object.screenRect;
+
+    _screen = object.screen;
 
     if(callBack){
         callBack();
