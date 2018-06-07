@@ -43,6 +43,15 @@ var _show='r';
 //弹幕显示顺序 true：弹幕优先在顶端显示
 var _topShow=true;
 
+//表情的缩放比例
+var _expressionScale='1';
+
+//屏幕是否移动
+var _screenMove = false;
+
+//屏幕分辨率
+var _screenRect;
+
 
 var readConfig = function( callBack ){
     var fs = require("fs");
@@ -68,6 +77,7 @@ var initConfigParam = function(texts,callBack){
     _bgColor = object.bgColor;
     _show = object.show;
     _topShow = object.topShow;
+    _expressionScale = object.expressionScale;
     if(_testServer){
         _baseUrl = _baseTestUrl;
         rsyncIp = _testIp;
@@ -76,6 +86,10 @@ var initConfigParam = function(texts,callBack){
         rsyncIp = _proIp
     }
     _partyList = object.partys;
+
+    _screenMove = object.screenMove;
+
+    _screenRect = object.screenRect;
 
     if(callBack){
         callBack();

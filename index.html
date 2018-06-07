@@ -10,33 +10,27 @@
     <script src="./init.js"></script>
     <script src="./log.js"></script>
     <script src="./schedule.js"></script>
+    <script src="./jquery.barrager.js"></script>
   </head>
   <body>
 
   </body>
 </html>
 <script>
-  var gui = require('nw.gui');
-  var win = gui.Window.get();
-  win.setAlwaysOnTop(true);
-  win.enterFullscreen();
+
 
   readConfig(function(){
     initDmClient();
   });
 
   downloadResourceSchedule();
-
-
-  //getDanmu();
-  //playVideo();
-  //bling();
+  //getLocalIp();
 
 
   /*
   var item={
-       img:'', //图片
-       info: '这是一个测试测试阿斯顿发送到发送到发', //文字
+       img:'./resource/upload/expressions/5b14cac5e6e9b86ef64cc19a.big.jpg', //图片
+       info: 'asdfasdfasdfasdfasd', //文字
        href:'', //链接
        close:true, //显示关闭按钮
        speed:10, //延迟,单位秒,默认6
@@ -44,7 +38,8 @@
        color:'#fff', //颜色,默认白色
        old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
   }
-  barrager(item,function(){
+  initCss3Barrager();
+  css3Barrager(item,function(){
     console.log('currentDmCount:'+currentDmCount);
   });
   */

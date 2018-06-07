@@ -2,6 +2,17 @@ var dmws;
 
 var initDmClient = function(){
     writelog('initDmClient start');
+    var gui = require('nw.gui');
+    var win = gui.Window.get();
+    win.setAlwaysOnTop(true);
+    if( _screenMove ){
+        win.moveTo(_screenRect[2],_screenRect[3]-_screenRect[1]);
+        win.enterFullscreen();
+    }else{
+        win.enterFullscreen();
+    }
+    //初始化弹幕展示区域的宽度
+    initNW();
     bodyClick();
     getSocketIp();
 }
@@ -39,6 +50,7 @@ var getCode = function(){
 
 var drawRegistModal = function(){
     var registCode = getCode();
+    if( registCode == null) registCode='';
     $('body').css('cursor','auto');
     var htmlStr = '<div class="modal"><div class="modal-body">'+
     '<label class="control-label">注册码</label>'+
@@ -111,7 +123,7 @@ var createSocket = function(ip,port){
 
     dmws.onmessage = function (evt) {
         var object = JSON.parse(evt.data);
-        sendDm(object,false);
+        drawDm(object,false);
     };
 }
 
@@ -126,8 +138,23 @@ var rsyncResourceFile = function(){
       console.log(`stdout: ${stdout}`);
       console.log(`stderr: ${stderr}`);
     });
-
 }
+
+//获取本地ip
+var getLocalIp = function(){
+    var os=require('os'),
+        iptable={},
+        ifaces=os.networkInterfaces();
+    for (var dev in ifaces) {
+      ifaces[dev].forEach(function(details,alias){
+        if (details.family=='IPv4' && details.address !== '127.0.0.1' && !alias.internal ) {
+            return details.address;
+        }
+      });
+    }
+}
+
+
 
 
 

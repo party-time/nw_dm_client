@@ -37,16 +37,26 @@ var barrager = function(barrage,removeCallBack){
     div_barrager.css("bottom", bottom + "px");
 
     if(_show =='r'){
-        div_barrager.css('right','-500px');
+        if(barrager.isOpDanmu){
+            div_barrager.css('left','-500px');
+        }else{
+            div_barrager.css('right','-500px');
+        }
+
     }else if(_show == 'l'){
-        div_barrager.css('left','-500px');
+        if(barrager.isOpDanmu){
+            div_barrager.css('right','-500px');
+        }else{
+            div_barrager.css('left','-500px');
+        }
     }
 
     div_barrager_box = $("<div class='barrage_box cl'></div>").appendTo(div_barrager);
     if(barrage.img){
-        div_barrager_box.append("<a class='portrait z' href='javascript:;'></a>");
-        var img = $("<img src='' >").appendTo(id + " .barrage_box .portrait");
+        //div_barrager_box.append("<div class='portrait1 z'></div>");
+        var img = $("<img src='' >").appendTo(id + " .barrage_box");
         img.attr('src', barrage.img);
+        img.css('width',100*_expressionScale+'px');
     }
 
     div_barrager_box.append(" <div class='p'></div>");
@@ -120,56 +130,67 @@ var dmBottom = function(){
 }
 
 
+var initCss3Barrager = function(){
+  let style = document.createElement('style');
+  var heads = document.getElementsByTagName("head");
+  if(heads.length)
+    heads[0].appendChild(style);
+  else
+    document.documentElement.appendChild(style);
+    let width = window.innerWidth;
+    if(_show =='r'){
+        style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
+        style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
+    }else if(_show == 'l'){
+        style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
+        style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
+    }
+}
 
-/**
-*ajax获取弹幕使用
-**/
-var getDanmu = function(){
-    $.ajax({
-        url: "http://www.party-time.cn/v1/api/javaClient/findHistoryDanmu?partyId=5ad7ef2c91289c1be33698c0&count=300&id=",
-        type: "get"
-    }).done(function (data) {
-        if (data.result == 200 || data.result == 403) {
-            var itemList = new Array();
-            for(var i=0;i<data.data.length;i++){
-                var speed = 6;
-                if(data.data[i].data.message.length>10){
-                    speed = 12;
-                }else{
-                    speed = 8;
-                }
-                var item={
-                     img:'', //图片
-                     info:data.data[i].data.message, //文字
-                     href:'', //链接
-                     close:true, //显示关闭按钮
-                     speed:speed, //延迟,单位秒,默认6
-                     bottom:0, //距离底部高度,单位px,默认随机
-                     color:'#fff', //颜色,默认白色
-                     old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
-               }
-               itemList[i] = item;
-            }
-            var j=0;
-            setInterval(function(){
-                    barrager(itemList[j]);
-                    ++j;
-            },2000);
+//css3弹幕
+var css3Barrager = function(barrage,removeCallBack){
+    var time = new Date().getTime();
+    var barrager_id = 'barrage_' + time;
+
+    var innerHtml =barrage.info;
+    if(barrage.img){
+        innerHtml='<img src="'+barrage.img+'" style="width:'+100*_expressionScale+'px" />';
+    }
+
+    var className = 'danmu';
+     if(barrager.isOpDanmu){
+        className='opDanmu';
+     }
+
+    var div_barrager = $("<div class='"+className+"' id='" + barrager_id + "'>"+innerHtml+"</div>").appendTo($('body'));
+    div_barrager.css('color',barrage.color);
+
+    var bottom = dmBottom();
+    div_barrager.css('bottom',bottom+'px');
+    var speed = 20*(1-_dmspeed);
+    div_barrager.css('animationDuration',speed+'s');
+    div_barrager.css('font-size',_fontSize);
+    ++currentDmCount;
+    div_barrager.on('webkitAnimationEnd', function () {
+        --currentDmCount;
+        if( currentDmCount<0){
+            currentDmCount =0;
         }
-    }).fail(function () {
-        alert('获取弹幕失败!');
+        if( removeCallBack ){
+            removeCallBack();
+        }
+        $(this).remove();
     });
+}
 
-
- }
 
 /**
 * 视频播放
 **/
-var playVideo = function(){
+var playVideo = function(videoUrl){
     $('<video id="myvideo" autoplay loop></video>').appendTo($('body'));
     var video = document.getElementById("myvideo");
-    video.src='59acfb6791289c66f33183a0.mp4';
+    video.src=videoUrl;
     video.play();
     setInterval(function(){
         $('#myvideo').remove();
@@ -210,7 +231,7 @@ var timerDm = function(partyId,num){
                 var i=0;
                 var now = new Date();
                 if( now.getTime() - movieStartTime.getTime() == objectList[i].beginTime){
-                    sendDm(objectList[i],true);
+                    drawDm(objectList[i],true);
                     ++i;
                 }
             });
@@ -220,14 +241,17 @@ var timerDm = function(partyId,num){
 }
 
 
-var sendDm = function(object , isTimer){
+var drawDm = function(object , isTimer){
+    initCss3Barrager();
     if (object.type == 'pDanmu') {
         var speed = _dmspeed;
+        /*
         if(object.data.message.length>10){
-            speed = 10*speed + 5;
+            speed = 20*(1-_dmspeed) + 5;
         }else{
-            speed = 10*speed - 5;
+            speed = 20*(1-_dmspeed);
         }
+        */
         var item={
              img:'', //图片
              info: object.data.message, //文字
@@ -239,7 +263,7 @@ var sendDm = function(object , isTimer){
              old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
         }
         dmws.send('{"type":"danmucount","clientType":"0","code":"'+getCode()+'","partyId":"5afa97b9e6e9b82681bcb53e","data":'+currentDmCount+'}');
-        barrager(item,function(){
+        css3Barrager(item,function(){
             dmws.send('{"type":"danmucount","clientType":"0","code":"'+getCode()+'","partyId":"5afa97b9e6e9b82681bcb53e","data":'+currentDmCount+'}');
         });
     }else if( object.type == 'command'){
@@ -254,7 +278,8 @@ var sendDm = function(object , isTimer){
             }
             //活动开始
             if(object.data.status == 1){
-                dm_currentParty = getParty();
+                dm_currentParty = getParty(object.data.partyId);
+                writelog('dm_currentParty:'+dm_currentParty);
             }else if(object.data.status == 2){//电影开始
                 //加载定时弹幕
                 timerDm(dm_partyId,1);
@@ -262,6 +287,7 @@ var sendDm = function(object , isTimer){
         }
         dmws.send(JSON.stringify(object));
     }else if( object.type == 'expression' ){
+        writelog('expression');
         var expressionId = '';
         if(isTimer){
             expressionId = object.data.expression;
@@ -269,12 +295,16 @@ var sendDm = function(object , isTimer){
             expressionId = object.data.idd;
         }
 
+        writelog('expressionId:'+expressionId);
+
         var expressionUrl = '';
+        writelog(JSON.stringify(dm_currentParty));
         for(var i=0;i<dm_currentParty.expressions.length;i++){
             if(dm_currentParty.expressions[i].id == expressionId){
                 expressionUrl = dm_currentParty.expressions[i].url;
             }
         }
+        writelog('expressionUrl:'+expressionUrl);
         var item={
              img:expressionUrl, //图片
              info: '', //文字
@@ -282,7 +312,7 @@ var sendDm = function(object , isTimer){
              close:false, //显示关闭按钮
              speed:speed, //延迟,单位秒,默认6
              bottom:0, //距离底部高度,单位px,默认随机
-             color:object.data.color.replace('0x','#'), //颜色,默认白色
+             color:'', //颜色,默认白色
              old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
         }
         barrager(item);
@@ -290,9 +320,29 @@ var sendDm = function(object , isTimer){
     }else if( object.type == 'bling' ){
 
     }else if( object.type == 'opDanmu' ){
+        var item={
+             img:'', //图片
+             info: object.data.message, //文字
+             href:'', //链接
+             close:false, //显示关闭按钮
+             speed:_dmspeed, //延迟,单位秒,默认6
+             bottom:0, //距离底部高度,单位px,默认随机
+             color:object.data.color.replace('0x','#'), //颜色,默认白色
+             old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
+             isOpDanmu:true
+        }
+        barrager(item);
 
     }else if( object.type == 'vedio' ){
-
+        var videoId = object.data.idd;
+        var videoUrl = '';
+        writelog(JSON.stringify(dm_currentParty));
+        for(var i=0;i<dm_currentParty.localVideoUrl.length;i++){
+            if(dm_currentParty.localVideoUrl[i].id == videoId){
+                expressionUrl = dm_currentParty.localVideoUrl[i].url;
+            }
+        }
+        playVideo(videoUrl);
     }
 
 }
