@@ -73,11 +73,10 @@ var getLocalServerList = function(){
       url: 'http://'+_baseUrl+'/v1/api/javaClient/findclientList/'+ getCode(),
       type: "get"
     }).done(function (data) {
-      var jsonD = JSON.parse(data);
-      if(jsonD.result == 200){
-        for(var i=0;i<jsonD.data.length;i++){
-            if(jsonD.data[i].ip == _localIp && i>0){
-                connectLocalSocketServer(jsonD.data[i-1].ip);
+      if(data.result == 200){
+        for(var i=0;i<data.data.length;i++){
+            if(data.data[i].ip == _localIp && i>0){
+                connectLocalSocketServer(data.data[i-1].ip);
             }
         }
       }else{
