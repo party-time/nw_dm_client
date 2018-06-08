@@ -1,6 +1,6 @@
 var _localIp;
 
-var localCLient;
+var localClient;
 
 //获取本地ip
 var getLocalIp = function(callback){
@@ -22,22 +22,15 @@ var startLocalSocketServer = function(callback){
     var HOST = '0.0.0.0';
     var PORT = 22223;
     writelog('startLocalSocketServer');
-    getLocalIp(function(localIp){
-        _localIp = localIp;
-        writelog('getLocalIp connect local socket server'+localIp);
-        dmws.send('{"type":"clientInfo","ip":"'+localIp+'","code":"'+getCode()+'","clientType":'+_clientType+',"number":'+_screen+'}');
-    });
+
     net.createServer(function(sock) {
 
         // 我们获得一个连接 - 该连接自动关联一个socket对象
-        console.log('CONNECTED: ' +
-            sock.remoteAddress + ':' + sock.remotePort);
+        writelog.log('CONNECTED: ');
         //获取局域网内其他server
-        getLocalServerList(callback);
-
         // 为这个socket实例添加一个"data"事件处理函数
         sock.on('data', function(data) {
-            console.log('DATA ' + sock.remoteAddress + ': ' + data);
+            console.log('DATA ' + data);
             if(!isMaster){
                 sendLocalDm(data);
             }
@@ -50,6 +43,7 @@ var startLocalSocketServer = function(callback){
         });
 
     }).listen(PORT, HOST);
+    getLocalServerList(callback);
 }
 
 var connectLocalSocketServer = function(ip,callback){
@@ -102,5 +96,5 @@ var getLocalServerList = function(callback){
 }
 
 var sendLocalDm = function(dm){
-    localCLient.write(dm);
+    localClient.write(dm);
 }

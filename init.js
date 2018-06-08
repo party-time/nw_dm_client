@@ -120,7 +120,11 @@ var createSocket = function(ip,port){
         }, 10000);
 
         //当与服务器建立连接后，启动本地socker server
-        writelog('createSocket connect local socket server');
+        getLocalIp(function(localIp){
+            _localIp = localIp;
+            writelog('getLocalIp connect local socket server'+localIp);
+            dmws.send('{"type":"clientInfo","ip":"'+localIp+'","code":"'+getCode()+'","clientType":'+_clientType+',"number":'+_screen+'}');
+        });
     };
 
     dmws.onclose = function (evt) {
