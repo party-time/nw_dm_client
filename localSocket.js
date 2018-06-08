@@ -2,6 +2,8 @@ var _localIp;
 
 var localClient;
 
+var localServerSocketList;
+
 //获取本地ip
 var getLocalIp = function(callback){
     var os=require('os'),
@@ -18,6 +20,7 @@ var getLocalIp = function(callback){
 }
 
 var startLocalSocketServer = function(callback){
+    localServerSocketList = new Array();
     var net = require('net');
     var HOST = '0.0.0.0';
     var PORT = 22223;
@@ -28,6 +31,7 @@ var startLocalSocketServer = function(callback){
         writelog.log('CONNECTED: ');
         //获取局域网内其他server
         // 为这个socket实例添加一个"data"事件处理函数
+        localServerSocketList.push(sock);
         sock.on('data', function(data) {
             console.log('DATA ' + data);
         });
@@ -91,7 +95,10 @@ var getLocalServerList = function(){
 }
 
 var sendLocalDm = function(dm){
-    if(localClient){
-        localClient.write(dm);
+    if(localServerSocketList && localServerSocketList.length>0){
+        for(var i=0;i<localServerSocketList.length;i++){
+            localServerSocketList[i].write(dm);
+        }
+        writelog(dm);
     }
 }
