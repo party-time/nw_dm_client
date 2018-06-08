@@ -22,7 +22,6 @@ var startLocalSocketServer = function(callback){
     var HOST = '0.0.0.0';
     var PORT = 22223;
     writelog('startLocalSocketServer');
-
     net.createServer(function(sock) {
 
         // 我们获得一个连接 - 该连接自动关联一个socket对象
@@ -31,9 +30,7 @@ var startLocalSocketServer = function(callback){
         // 为这个socket实例添加一个"data"事件处理函数
         sock.on('data', function(data) {
             console.log('DATA ' + data);
-            if(!isMaster){
-                sendLocalDm(data);
-            }
+            sendLocalDm(data);
         });
 
         // 为这个socket实例添加一个"close"事件处理函数
@@ -43,10 +40,11 @@ var startLocalSocketServer = function(callback){
         });
 
     }).listen(PORT, HOST);
-    getLocalServerList(callback);
+    getLocalServerList();
+    callback();
 }
 
-var connectLocalSocketServer = function(ip,callback){
+var connectLocalSocketServer = function(ip){
     var net = require('net');
     var PORT = 22223;
     var client = new net.Socket();
@@ -54,7 +52,6 @@ var connectLocalSocketServer = function(ip,callback){
     client.connect(PORT, ip, function() {
         console.log('CONNECTED TO: ' + ip + ':' + PORT);
         localCLient = client;
-        callback();
     });
     // 为客户端添加“data”事件处理函数
     // data是服务器发回的数据
@@ -62,8 +59,10 @@ var connectLocalSocketServer = function(ip,callback){
         console.log('DATA: ' + data);
         // 完全关闭连接
         //client.destroy();
-        var object = JSON.parse(data);
-        drawDm(object,false);
+        if(!isMaster){
+            var object = JSON.parse(data);
+            drawDm(object,false);
+        }
     });
     // 为客户端添加“close”事件处理函数
     client.on('close', function() {
@@ -71,7 +70,7 @@ var connectLocalSocketServer = function(ip,callback){
     });
 }
 
-var getLocalServerList = function(callback){
+var getLocalServerList = function(){
     $.ajax({
       url: 'http://'+_baseUrl+'/v1/api/javaClient/findclientList/'+ getCode(),
       type: "get"
@@ -82,12 +81,9 @@ var getLocalServerList = function(callback){
                 for(var i=0;i<data.data.length;i++){
                     if(data.data[i].ip == _localIp && i>0){
                         writelog(data.data[i-1].ip );
-                        connectLocalSocketServer(data.data[i-1].ip,callback);
+                        connectLocalSocketServer(data.data[i-1].ip);
                     }
                 }
-
-            }else{
-                callback();
             }
       }else{
           alert('获取本地客户端列表失败');
@@ -96,5 +92,7 @@ var getLocalServerList = function(callback){
 }
 
 var sendLocalDm = function(dm){
-    localClient.write(dm);
+    if(localClient){
+        localClient.write(dm);
+    }
 }
