@@ -25,29 +25,25 @@ var startLocalSocketServer = function(callback){
     var HOST = '0.0.0.0';
     var PORT = 22223;
     writelog('startLocalSocketServer');
-    net.createServer(function(sock) {
+    var server = net.createServer();
+    server.listen(PORT, HOST);
 
-        // 我们获得一个连接 - 该连接自动关联一个socket对象
+    server.on('connection', function(sock) {
+        writelog('CONNECTED:');
+        localServerSocketList.push(sock);
+    });
 
-        //获取局域网内其他server
-        // 为这个socket实例添加一个"data"事件处理函数
+    server.on('data', function(sock) {
+        console.log('CONNECTED: ' +
+             sock.remoteAddress +':'+ sock.remotePort);
+        // 其它内容与前例相同
+    });
 
-        sock.on('connection',function(data){
-            writelog('CONNECTED:');
-            localServerSocketList.push(sock);
-        });
-
-        sock.on('data', function(data) {
-            console.log('DATA ' + data);
-        });
-
-        // 为这个socket实例添加一个"close"事件处理函数
-        sock.on('close', function(data) {
-            console.log('CLOSED: ' +
-                sock.remoteAddress + ' ' + sock.remotePort);
-        });
-
-    }).listen(PORT, HOST);
+    server.on('close', function(sock) {
+        console.log('CONNECTED: ' +
+             sock.remoteAddress +':'+ sock.remotePort);
+        // 其它内容与前例相同
+    });
     getLocalServerList();
     callback();
 }
