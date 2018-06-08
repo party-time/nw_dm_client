@@ -62,14 +62,14 @@ var _screen;
 var readConfig = function( callBack ){
     var fs = require("fs");
     var iconv = require('iconv-lite');
-    fs.readFile(configPath,'utf-8',function(err, data) {
+    fs.readFile(configPath,function(err, data) {
         if( err ){
             getConfig(callBack);
             writelog(err);
         }else{
-            //var texts = iconv.decode(data, 'gbk');
-            initConfigParam(data,callBack);
-            //writelog(data);
+            var texts = iconv.decode(data, 'utf-8');
+            initConfigParam(texts,callBack);
+            writelog(texts);
         }
 
     });
