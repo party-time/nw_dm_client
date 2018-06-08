@@ -193,6 +193,7 @@ var css3Barrager = function(barrage,removeCallBack){
             removeCallBack();
         }
         $(this).remove();
+        sendLocalDm(JSON.stringify(barrage));
     });
 }
 

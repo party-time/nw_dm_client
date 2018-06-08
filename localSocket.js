@@ -1,5 +1,7 @@
 var _localIp;
 
+var localCLient;
+
 //获取本地ip
 var getLocalIp = function(callback){
     var os=require('os'),
@@ -19,29 +21,32 @@ var startLocalSocketServer = function(){
     var net = require('net');
     var HOST = '0.0.0.0';
     var PORT = 22223;
-    var server = net.createServer();
-    server.listen(PORT, HOST);
     writelog('startLocalSocketServer connect local socket server');
     getLocalIp(function(localIp){
         _localIp = localIp;
         writelog('getLocalIp connect local socket server'+localIp);
         dmws.send('{"type":"clientInfo","ip":"'+localIp+'","code":"'+getCode()+'","clientType":'+_clientType+',"number":'+_screen+'}');
     });
+    net.createServer(function(sock) {
 
-    server.on('connection', function(sock) {
-        writelog('connect local socket server'+localIp);
-    });
+        // 我们获得一个连接 - 该连接自动关联一个socket对象
+        console.log('CONNECTED: ' +
+            sock.remoteAddress + ':' + sock.remotePort);
 
-    server.on('data', function(sock) {
-        console.log('DATA ' + sock.remoteAddress + ': ' + data);
-        // 回发该数据，客户端将收到来自服务端的数据
-        sock.write('You said "' + data + '"');
-    });
-    // 为这个socket实例添加一个"close"事件处理函数
-    server.on('close', function(sock) {
-        console.log('CLOSED: ' +
-            sock.remoteAddress + ' ' + sock.remotePort);
-    });
+        // 为这个socket实例添加一个"data"事件处理函数
+        sock.on('data', function(data) {
+            console.log('DATA ' + sock.remoteAddress + ': ' + data);
+            var object = JSON.parse(data);
+            drawDm(object,false);
+        });
+
+        // 为这个socket实例添加一个"close"事件处理函数
+        sock.on('close', function(data) {
+            console.log('CLOSED: ' +
+                sock.remoteAddress + ' ' + sock.remotePort);
+        });
+
+    }).listen(PORT, HOST);
 }
 
 var connectLocalSocketServer = function(ip){
@@ -49,23 +54,20 @@ var connectLocalSocketServer = function(ip){
     var PORT = 22223;
     var client = new net.Socket();
     client.connect(PORT, ip, function() {
-        console.log('CONNECTED TO: ' + HOST + ':' + PORT);
-        // 建立连接后立即向服务器发送数据，服务器将收到这些数据
-        client.write('I am Chuck Norris!');
+        console.log('CONNECTED TO: ' + ip + ':' + PORT);
+        localCLient = client;
     });
     // 为客户端添加“data”事件处理函数
     // data是服务器发回的数据
     client.on('data', function(data) {
         console.log('DATA: ' + data);
         // 完全关闭连接
-        client.destroy();
-
+        //client.destroy();
     });
     // 为客户端添加“close”事件处理函数
     client.on('close', function() {
         console.log('Connection closed');
     });
-
 }
 
 var getLocalServerList = function(){
@@ -74,8 +76,10 @@ var getLocalServerList = function(){
       type: "get"
     }).done(function (data) {
       if(data.result == 200){
+        writelog('getLocalServerList');
         for(var i=0;i<data.data.length;i++){
             if(data.data[i].ip == _localIp && i>0){
+                writelog(data.data[i-1].ip );
                 connectLocalSocketServer(data.data[i-1].ip);
             }
         }
@@ -83,5 +87,8 @@ var getLocalServerList = function(){
           alert('获取本地客户端列表失败');
       }
     });
+}
 
+var sendLocalDm = function(dm){
+    localCLient.write(dm);
 }
