@@ -30,7 +30,6 @@ var startLocalSocketServer = function(callback){
         // 为这个socket实例添加一个"data"事件处理函数
         sock.on('data', function(data) {
             console.log('DATA ' + data);
-            sendLocalDm(data);
         });
 
         // 为这个socket实例添加一个"close"事件处理函数
