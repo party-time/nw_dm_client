@@ -2,6 +2,16 @@ var dmws;
 
 var initDmClient = function(){
     writelog('initDmClient start');
+    //初始化NW的属性
+    initNW();
+    bodyClick();
+    startLocalSocketServer(function(){
+        getSocketIp();
+    });
+
+}
+
+var initNW = function(){
     var gui = require('nw.gui');
     var win = gui.Window.get();
     win.setAlwaysOnTop(true);
@@ -11,13 +21,6 @@ var initDmClient = function(){
     }else{
         win.enterFullscreen();
     }
-    //初始化弹幕展示区域的宽度
-    initNW();
-    bodyClick();
-    getSocketIp();
-}
-
-var initNW = function(){
     $('body').css('background-color',_bgColor);
 }
 
@@ -118,7 +121,6 @@ var createSocket = function(ip,port){
 
         //当与服务器建立连接后，启动本地socker server
         writelog('createSocket connect local socket server');
-        startLocalSocketServer();
     };
 
     dmws.onclose = function (evt) {
@@ -151,7 +153,9 @@ var createSocket = function(ip,port){
             //获取本地其他node客户端列表
             getLocalServerList();
         }else{
-            drawDm(object,false);
+            if(isMaster){
+                drawDm(object,false);
+            }
         }
 
     };

@@ -193,7 +193,10 @@ var css3Barrager = function(barrage,removeCallBack){
             removeCallBack();
         }
         $(this).remove();
-        sendLocalDm(JSON.stringify(barrage));
+        //如果是局域网主机，需要像本地其他机器推送弹幕
+        if(isMaster){
+            sendLocalDm(JSON.stringify(barrage));
+        }
     });
 }
 
@@ -269,9 +272,9 @@ var drawDm = function(object , isTimer){
              color:object.data.color.replace('0x','#'), //颜色,默认白色
              old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
         }
-        dmws.send('{"type":"danmucount","clientType":"0","code":"'+getCode()+'","partyId":"5afa97b9e6e9b82681bcb53e","data":'+currentDmCount+'}');
+        dmws.send('{"type":"danmucount","clientType":"'+_clientType+'","code":"'+getCode()+'","partyId":"'+dm_currentParty.partyId+'","data":'+currentDmCount+'}');
         css3Barrager(item,function(){
-            dmws.send('{"type":"danmucount","clientType":"0","code":"'+getCode()+'","partyId":"5afa97b9e6e9b82681bcb53e","data":'+currentDmCount+'}');
+            dmws.send('{"type":"danmucount","clientType":"'+_clientType+'","code":"'+getCode()+'","partyId":"'+dm_currentParty.partyId+'","data":'+currentDmCount+'}');
         });
     }else if( object.type == 'expression' ){
         writelog('expression');

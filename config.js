@@ -8,6 +8,9 @@ var rsyncIp;
 //客户端类型
 var _clientType = 3;
 
+//是否是局域网主机
+var isMaster = true;
+
 var configPath = './config';
 
 //基本资源文件的路径
