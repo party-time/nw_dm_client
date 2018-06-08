@@ -28,10 +28,14 @@ var startLocalSocketServer = function(callback){
     net.createServer(function(sock) {
 
         // 我们获得一个连接 - 该连接自动关联一个socket对象
-        writelog.log('CONNECTED: ');
+        writelog('CONNECTED: ');
         //获取局域网内其他server
         // 为这个socket实例添加一个"data"事件处理函数
-        localServerSocketList.push(sock);
+
+        sock.on('connection',function(){
+            localServerSocketList.push(sock);
+        });
+
         sock.on('data', function(data) {
             console.log('DATA ' + data);
         });
