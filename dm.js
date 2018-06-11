@@ -181,6 +181,7 @@ var css3Barrager = function(barrage,removeCallBack){
     var bottom;
     if(barrage.bottom == 0){
         bottom = dmBottom();
+        barrage.bottom = bottom;
     }else{
         bottom = barrage.bottom;
     }
@@ -199,7 +200,7 @@ var css3Barrager = function(barrage,removeCallBack){
         if( currentDmCount<0){
             currentDmCount =0;
         }
-        var dt = divWidth/(screenWidth/speed);
+        var dt = divWidth/(screenWidth+divWidth/speed);
         writelog('div_barrager time:'+dt);
         $(this).addClass('endDanmu').css('animationDuration',dt+'s').on('webkitAnimationEnd',function(){
                 $(this).remove();
@@ -278,19 +279,19 @@ var drawDm = function(object , isTimer){
     if(object.bottom){
         bottom = object.bottom;
     }
+    var item={
+         img:'', //图片
+         info:'' , //文字
+         href:'', //链接
+         close:false, //显示关闭按钮
+         speed:0, //延迟,单位秒,默认6
+         bottom:bottom, //距离底部高度,单位px,默认随机
+         color:object.data.color.replace('0x','#'), //颜色,默认白色
+         old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
+         type:object.type
+    }
     if (object.type == 'pDanmu') {
-        var speed = _dmspeed;
-
-        var item={
-             img:'', //图片
-             info: object.data.message, //文字
-             href:'', //链接
-             close:false, //显示关闭按钮
-             speed:speed, //延迟,单位秒,默认6
-             bottom:bottom, //距离底部高度,单位px,默认随机
-             color:object.data.color.replace('0x','#'), //颜色,默认白色
-             old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
-        }
+        item.info = object.data.message;
         dmws.send('{"type":"danmucount","clientType":"'+_clientType+'","code":"'+getCode()+'","partyId":"'+dm_currentParty.partyId+'","data":'+currentDmCount+'}');
         css3Barrager(item,function(){
             dmws.send('{"type":"danmucount","clientType":"'+_clientType+'","code":"'+getCode()+'","partyId":"'+dm_currentParty.partyId+'","data":'+currentDmCount+'}');
@@ -313,32 +314,13 @@ var drawDm = function(object , isTimer){
             }
         }
         writelog('expressionUrl:'+expressionUrl);
-        var item={
-             img:expressionUrl, //图片
-             info: '', //文字
-             href:'', //链接
-             close:false, //显示关闭按钮
-             speed:speed, //延迟,单位秒,默认6
-             bottom:bottom, //距离底部高度,单位px,默认随机
-             color:'', //颜色,默认白色
-             old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
-        }
+        item.img = expressionUrl;
         css3Barrager(item);
-
     }else if( object.type == 'bling' ){
 
     }else if( object.type == 'opDanmu' ){
-        var item={
-             img:'', //图片
-             info: object.data.message, //文字
-             href:'', //链接
-             close:false, //显示关闭按钮
-             speed:_dmspeed, //延迟,单位秒,默认6
-             bottom:bottom, //距离底部高度,单位px,默认随机
-             color:object.data.color.replace('0x','#'), //颜色,默认白色
-             old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
-             isOpDanmu:true
-        }
+        item.info = object.data.message;
+        item.isOpDanmu = true;
         css3Barrager(item);
 
     }else if( object.type == 'vedio' ){
