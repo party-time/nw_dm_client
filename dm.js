@@ -149,8 +149,9 @@ var initCss3Barrager = function(){
         document.documentElement.appendChild(style);
         let width = window.innerWidth;
         if(_show =='r'){
-            style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
+            style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(0); } }', 0);
             style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
+            style.sheet.insertRule('@-webkit-keyframes endDanmu { from { visibility: visible; -webkit-transform: translateX(0); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
         }else if(_show == 'l'){
             style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
             style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
@@ -184,19 +185,28 @@ var css3Barrager = function(barrage,removeCallBack){
         bottom = barrage.bottom;
     }
     div_barrager.css('bottom',bottom+'px');
-    var speed = 20*(1-_dmspeed);
+    var speed = 10*(1.1-_dmspeed);
     div_barrager.css('animationDuration',speed+'s');
     div_barrager.css('font-size',_fontSize);
     ++currentDmCount;
+
+    var screenWidth = window.innerWidth;
+    var divWidth = div_barrager.width();
+
+
     div_barrager.on('webkitAnimationEnd', function () {
         --currentDmCount;
         if( currentDmCount<0){
             currentDmCount =0;
         }
-        if( removeCallBack ){
-            removeCallBack();
-        }
-        $(this).remove();
+        var dt = divWidth/(screenWidth/speed);
+        writelog('div_barrager time:'+dt);
+        $(this).addClass('endDanmu').css('animationDuration',dt+'s').on('webkitAnimationEnd',function(){
+                $(this).remove();
+                if( removeCallBack ){
+                    removeCallBack();
+                }
+        });
         //如果是局域网主机，需要像本地其他机器推送弹幕
         if(isMaster){
             sendLocalDm(JSON.stringify(barrage));

@@ -92,3 +92,19 @@ video{
     visibility: hidden;
 }
 
+.endDanmu {
+    position: fixed;
+    display: inline-block;
+    white-space: pre;
+    pointer-events: none;
+    font-weight: bold;
+    color:rgb(255,255,255);
+    font-size: 50px;
+    font-family: 黑体;
+    opacity: 0.75;
+    text-shadow: rgb(0, 0, 0) 1px 1px 2px;
+    animation: endDanmu 1.5s linear 0s 1;
+    left: 0;
+    visibility: hidden;
+}
+

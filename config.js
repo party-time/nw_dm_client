@@ -35,7 +35,7 @@ var _registCodeKey = 'rck';
 var _fontSize=50;
 
 //弹幕移动速度
-var _dmspeed=10;
+var _dmspeed=0.6;
 
 //是否测试服务器 true：是 false：否
 var _testServer=false;

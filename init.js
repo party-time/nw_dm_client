@@ -160,7 +160,6 @@ var createSocket = function(ip,port){
             if(isMaster){
                 drawDm(object,false);
             }
-            sendLocalDm(evt.data);
         }
 
     };
