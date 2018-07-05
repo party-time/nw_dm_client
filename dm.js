@@ -186,8 +186,8 @@ var css3Barrager = function(barrage,removeCallBack){
         bottom = barrage.bottom;
     }
     div_barrager.css('bottom',bottom+'px');
-    var speed = 10*(1.1-_dmspeed);
-    div_barrager.css('animationDuration',speed+'s');
+    var moveTime = 10*(1.1-_dmspeed);
+    div_barrager.css('animationDuration',moveTime+'s');
     div_barrager.css('font-size',_fontSize);
     ++currentDmCount;
 
@@ -200,7 +200,7 @@ var css3Barrager = function(barrage,removeCallBack){
         if( currentDmCount<0){
             currentDmCount =0;
         }
-        var dt = divWidth/((screenWidth+divWidth)/speed);
+        var dt = divWidth/((screenWidth-divWidth)/moveTime);
         //dt = dt - 0.12;
         writelog('div_barrager time:'+dt);
         $(this).addClass('endDanmu').css('animationDuration',dt+'s').on('webkitAnimationEnd',function(){
