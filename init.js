@@ -17,11 +17,11 @@ var initNW = function(){
     win.setAlwaysOnTop(true);
     writelog('initNW start');
     if( _screenMove ){
-        //win.moveTo(_screenRect[2],_screenRect[3]-_screenRect[1]);
-        win.moveTo(1440,0);
-        win.resizeTo(800,600);
+        win.moveTo(parseInt(_screenRect[2]),parseInt(_screenRect[3])-parseInt(_screenRect[1]));
+        //win.moveTo(1440,0);
+        win.enterFullscreen();
     }else{
-        win.resizeTo(800,600);
+        win.enterFullscreen();
     }
     $('body').css('background-color',_bgColor);
 }
