@@ -149,7 +149,7 @@ var initCss3Barrager = function(){
         document.documentElement.appendChild(style);
         let width = window.innerWidth;
         if(_show =='r'){
-            style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(0); } }', 0);
+            style.sheet.insertRule('@-webkit-keyframes danmu { from { visibility: visible; -webkit-transform: translateX('+width+'px); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
             style.sheet.insertRule('@-webkit-keyframes opDanmu { from { visibility: visible; -webkit-transform: translateX(-100%); } to { visibility: visible; -webkit-transform: translateX('+width+'px); } }', 0);
             style.sheet.insertRule('@-webkit-keyframes endDanmu { from { visibility: visible; -webkit-transform: translateX(0); } to { visibility: visible; -webkit-transform: translateX(-100%); } }', 0);
         }else if(_show == 'l'){
