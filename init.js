@@ -18,7 +18,7 @@ var initNW = function(){
     writelog('initNW start');
     if( _screenMove ){
         //win.moveTo(_screenRect[2],_screenRect[3]-_screenRect[1]);
-        win.moveTo(300,400);
+        win.moveTo(1440,0);
         win.resizeTo(800,600);
     }else{
         win.resizeTo(800,600);
