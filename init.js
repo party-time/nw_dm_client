@@ -15,6 +15,7 @@ var initNW = function(){
     var gui = require('nw.gui');
     var win = gui.Window.get();
     win.setAlwaysOnTop(true);
+    writelog('initNW start');
     if( _screenMove ){
         win.moveTo(_screenRect[2],_screenRect[3]-_screenRect[1]);
         win.resizeTo(800,600);
@@ -25,6 +26,7 @@ var initNW = function(){
 }
 
 var bodyClick = function(){
+    writelog('bodyClick start');
     var click_time=0,click_num=0;
     $('body').click(function(){
         if( click_num == 0){
