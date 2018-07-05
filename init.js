@@ -17,9 +17,9 @@ var initNW = function(){
     win.setAlwaysOnTop(true);
     if( _screenMove ){
         win.moveTo(_screenRect[2],_screenRect[3]-_screenRect[1]);
-        win.enterFullscreen();
+        win.resizeTo(800,600);
     }else{
-        win.enterFullscreen();
+        win.resizeTo(800,600);
     }
     $('body').css('background-color',_bgColor);
 }

@@ -65,24 +65,17 @@ var _screen;
 var readConfig = function( callBack ){
     var fs = require("fs");
     var iconv = require('iconv-lite');
-    if(getCode()==null){
-        if(callBack){
-            _screenMove=false;
-            callBack();
+    fs.readFile(configPath,function(err, data) {
+        if( err ){
+            getConfig(callBack);
+            writelog(err);
+        }else{
+            var texts = iconv.decode(data, 'utf-8');
+            initConfigParam(texts,callBack);
+            writelog(texts);
         }
-    }else{
-        fs.readFile(configPath,function(err, data) {
-            if( err ){
-                getConfig(callBack);
-                writelog(err);
-            }else{
-                var texts = iconv.decode(data, 'utf-8');
-                initConfigParam(texts,callBack);
-                writelog(texts);
-            }
 
-        });
-    }
+    });
 
 }
 
