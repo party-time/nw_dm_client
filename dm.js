@@ -203,15 +203,12 @@ var css3Barrager = function(barrage,removeCallBack){
         var dt = divWidth/((screenWidth+divWidth)/moveTime);
         //dt = dt - 0.12;
         writelog('div_barrager time:'+dt);
-        /*
         $(this).addClass('endDanmu').css('animationDuration',dt+'s').on('webkitAnimationEnd',function(){
-
+            $(this).remove();
+            if( removeCallBack ){
+                removeCallBack();
+            }
         });
-        */
-        $(this).remove();
-        if( removeCallBack ){
-            removeCallBack();
-        }
         //如果是局域网主机，需要像本地其他机器推送弹幕
         if(isMaster){
             sendLocalDm(JSON.stringify(barrage));
