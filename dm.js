@@ -200,7 +200,7 @@ var css3Barrager = function(barrage,removeCallBack){
         if( currentDmCount<0){
             currentDmCount =0;
         }
-        var dt = divWidth/(screenWidth+divWidth/speed);
+        var dt = divWidth/(screenWidth/speed);
         writelog('div_barrager time:'+dt);
         $(this).addClass('endDanmu').css('animationDuration',dt+'s').on('webkitAnimationEnd',function(){
                 $(this).remove();
@@ -290,21 +290,27 @@ var drawDm = function(object , isTimer){
          old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
          type:object.type
     }
-    if (object.type == 'pDanmu') {
+    if(object.data){
         item.info = object.data.message;
+        item.color = object.data.color.replace('0x','#');
+    }else if(object.info){
+        item.info = object.info;
+    }else if( object.color){
+        item.color = object.color;
+    }
+
+    if (object.type == 'pDanmu') {
         dmws.send('{"type":"danmucount","clientType":"'+_clientType+'","code":"'+getCode()+'","partyId":"'+dm_currentParty.partyId+'","data":'+currentDmCount+'}');
         css3Barrager(item,function(){
             dmws.send('{"type":"danmucount","clientType":"'+_clientType+'","code":"'+getCode()+'","partyId":"'+dm_currentParty.partyId+'","data":'+currentDmCount+'}');
         });
     }else if( object.type == 'expression' ){
-        writelog('expression');
         var expressionId = '';
-        if(isTimer){
+        if(object.data.expression){
             expressionId = object.data.expression;
         }else{
             expressionId = object.data.idd;
         }
-
         writelog('expressionId:'+expressionId);
         var expressionUrl = '';
         writelog(JSON.stringify(dm_currentParty));
@@ -319,10 +325,8 @@ var drawDm = function(object , isTimer){
     }else if( object.type == 'bling' ){
 
     }else if( object.type == 'opDanmu' ){
-        item.info = object.data.message;
         item.isOpDanmu = true;
         css3Barrager(item);
-
     }else if( object.type == 'vedio' ){
         var videoId = object.data.idd;
         var videoUrl = '';
