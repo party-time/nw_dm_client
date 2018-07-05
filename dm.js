@@ -200,7 +200,7 @@ var css3Barrager = function(barrage,removeCallBack){
         if( currentDmCount<0){
             currentDmCount =0;
         }
-        var dt = divWidth/(screenWidth/speed);
+        var dt = divWidth+5/(screenWidth/speed);
         writelog('div_barrager time:'+dt);
         $(this).addClass('endDanmu').css('animationDuration',dt+'s').on('webkitAnimationEnd',function(){
                 $(this).remove();
