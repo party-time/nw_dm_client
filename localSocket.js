@@ -50,8 +50,8 @@ var startLocalSocketServer = function(callback){
         // 其它内容与前例相同
     });
 
-    server.on('error',function(sock){
-        console.log('error: ' +
+    server.on('disconnect',function(sock){
+        console.log('disconnect: ' +
                      sock.remoteAddress +':'+ sock.remotePort);
     });
     getLocalServerList();
