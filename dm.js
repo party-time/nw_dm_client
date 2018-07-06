@@ -218,7 +218,7 @@ var css3Barrager = function(barrage,removeCallBack){
     var looper = setInterval(getBarragerX, 100);
     function getBarragerX(){
         var x = div_barrager.position().left;
-        if(x <= 50){
+        if(x <= 30){
             clearInterval(looper);
             //如果是局域网主机，需要像本地其他机器推送弹幕
             if(isMaster){
