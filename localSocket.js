@@ -50,7 +50,7 @@ var startLocalSocketServer = function(callback){
         // 其它内容与前例相同
     });
 
-    server.on('disconnect',function(sock){
+    server.on('uncaughtException',function(sock){
         console.log('disconnect: ' +
                      sock.remoteAddress +':'+ sock.remotePort);
     });
