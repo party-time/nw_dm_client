@@ -215,7 +215,7 @@ var css3Barrager = function(barrage,removeCallBack){
     });
 
 
-    var looper = setInterval(getBarragerX, 200);
+    var looper = setInterval(getBarragerX, 100);
     function getBarragerX(){
         var x = div_barrager.position().left;
         if(x <= 50){
@@ -308,6 +308,7 @@ var drawDm = function(object , isTimer){
         item.color = object.data.color.replace('0x','#');
     }else if(object.info){
         item.info = object.info;
+        writelog('object.color'+object.color);
         //item.color = object.color;
     }
 
