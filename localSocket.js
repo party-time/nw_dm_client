@@ -34,13 +34,13 @@ var startLocalSocketServer = function(callback){
     });
 
     server.on('data', function(sock) {
-        console.log('CONNECTED: ' +
+        console.log('data: ' +
              sock.remoteAddress +':'+ sock.remotePort);
         // 其它内容与前例相同
     });
 
     server.on('close', function(sock) {
-        console.log('CONNECTED: ' +
+        console.log('close: ' +
              sock.remoteAddress +':'+ sock.remotePort);
         for(var i=0;i<localServerSocketList.length;i++){
             if(localServerSocketList[i].remoteAddress == sock.remoteAddress){
@@ -49,8 +49,15 @@ var startLocalSocketServer = function(callback){
         }
         // 其它内容与前例相同
     });
+
+    server.on('error',function(sock){
+        console.log('error: ' +
+                     sock.remoteAddress +':'+ sock.remotePort);
+    });
     getLocalServerList();
-    callback();
+    if(callback){
+         callback();
+    }
 }
 
 var connectLocalSocketServer = function(ip){
@@ -107,6 +114,6 @@ var sendLocalDm = function(dm){
         for(var i=0;i<localServerSocketList.length;i++){
             localServerSocketList[i].write(dm);
         }
-        writelog(dm);
+        //writelog(dm);
     }
 }

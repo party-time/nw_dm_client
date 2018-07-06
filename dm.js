@@ -300,7 +300,6 @@ var drawDm = function(object , isTimer){
     }else if(object.info){
         item.info = object.info;
         item.color = object.color;
-        writelog('item.color'+item.color);
     }
 
     if (object.type == 'pDanmu') {
