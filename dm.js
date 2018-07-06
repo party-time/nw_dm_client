@@ -255,6 +255,7 @@ var bling = function(){
 
 var timerDm = function(partyId,num){
     var fs = require("fs");
+    writelog('timerDm'+partyId);
     var timerDmPath = _timerDanmuPath+'/'+partyId;
     var timerDmFilePath = timerDmPath + '/' + partyId + '_'+num+'.json';
     fs.readFile(timerDmFilePath,'utf-8',function(err, data) {
