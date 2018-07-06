@@ -110,7 +110,8 @@ var sendLocalDm = function(dm){
         for(var i=0;i<localServerSocketList.length;i++){
             try{
                 localServerSocketList[i].write(dm);
-            }catch(err){
+            }catch(e){
+                writelog('sendLocalDm');
                 localServerSocketList.remove(i);
             }
         }
