@@ -71,7 +71,8 @@ var connectLocalSocketServer = function(ip){
     // 为客户端添加“close”事件处理函数
     client.on('close', function() {
         writelog('Connection closed');
-        getSocketIp();
+        isMaster=true;
+        getLocalServerList();
     });
 }
 
