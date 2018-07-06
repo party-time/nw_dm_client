@@ -218,7 +218,6 @@ var css3Barrager = function(barrage,removeCallBack){
     var looper = setInterval(getBarragerX, 200);
     function getBarragerX(){
         var x = div_barrager.position().left;
-        writelog('screen width:'+(screenWidth-div_barrager.width()));
         if(x <= 50){
             clearInterval(looper);
             //如果是局域网主机，需要像本地其他机器推送弹幕
@@ -226,7 +225,6 @@ var css3Barrager = function(barrage,removeCallBack){
                 sendLocalDm(JSON.stringify(barrage));
             }
         }
-        writelog('div_barrager x:'+x);
     }
 }
 
