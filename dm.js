@@ -303,12 +303,12 @@ var drawDm = function(object , isTimer){
          old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
          type:object.type
     }
+
     if(object.data){
         item.info = object.data.message;
         item.color = object.data.color.replace('0x','#');
     }else if(object.info){
         item.info = object.info;
-    }else if( object.color){
         item.color = object.color;
     }
 

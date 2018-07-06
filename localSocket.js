@@ -60,7 +60,6 @@ var connectLocalSocketServer = function(ip){
     // 为客户端添加“data”事件处理函数
     // data是服务器发回的数据
     client.on('data', function(data) {
-
         // 完全关闭连接
         //client.destroy();
         if(!isMaster){
