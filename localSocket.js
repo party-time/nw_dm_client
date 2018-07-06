@@ -39,21 +39,17 @@ var startLocalSocketServer = function(callback){
         // 其它内容与前例相同
     });
 
-    server.on('close', function(sock) {
-        console.log('close: ' +
-             sock.remoteAddress +':'+ sock.remotePort);
-        for(var i=0;i<localServerSocketList.length;i++){
-            if(localServerSocketList[i].remoteAddress == sock.remoteAddress){
-                localServerSocketList.remove(i);
-            }
-        }
+    server.on('close', function() {
+        console.log('close: ');
+
         // 其它内容与前例相同
     });
 
-    server.on('uncaughtException',function(sock){
-        console.log('disconnect: ' +
+    server.on('error',function(){
+        console.log('error: ' +
                      sock.remoteAddress +':'+ sock.remotePort);
     });
+
     getLocalServerList();
     if(callback){
          callback();
@@ -112,7 +108,11 @@ var getLocalServerList = function(){
 var sendLocalDm = function(dm){
     if(localServerSocketList && localServerSocketList.length>0){
         for(var i=0;i<localServerSocketList.length;i++){
-            localServerSocketList[i].write(dm);
+            try{
+                localServerSocketList[i].write(dm);
+            }catch(err){
+                localServerSocketList.remove(i);
+            }
         }
         //writelog(dm);
     }
