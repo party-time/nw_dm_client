@@ -300,7 +300,6 @@ var drawDm = function(object , isTimer){
          speed:0, //延迟,单位秒,默认6
          bottom:bottom, //距离底部高度,单位px,默认随机
          color:'', //颜色,默认白色
-         old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色
          type:object.type
     }
 
@@ -309,7 +308,7 @@ var drawDm = function(object , isTimer){
         item.color = object.data.color.replace('0x','#');
     }else if(object.info){
         item.info = object.info;
-        item.color = object.color;
+        //item.color = object.color;
     }
 
     if (object.type == 'pDanmu') {
