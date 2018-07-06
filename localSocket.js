@@ -40,8 +40,13 @@ var startLocalSocketServer = function(callback){
     });
 
     server.on('close', function(sock) {
-        console.log('CONNECTED: ' +
+        console.log('CONNECTED: ' +sock.id+
              sock.remoteAddress +':'+ sock.remotePort);
+        for(var i=0;i<localServerSocketList.length;i++){
+            if(localServerSocketList[i].id == sock.id){
+                localServerSocketList.remove(i);
+            }
+        }
         // 其它内容与前例相同
     });
     getLocalServerList();
