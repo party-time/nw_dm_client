@@ -177,6 +177,7 @@ var css3Barrager = function(barrage,removeCallBack){
      }
 
     var div_barrager = $("<div class='"+className+"' id='" + barrager_id + "'>"+innerHtml+"</div>").appendTo($('body'));
+    writelog('css3Barrager color'+barrage.color);
     div_barrager.css('color',barrage.color);
     var bottom;
     if(barrage.bottom == 0){
@@ -308,8 +309,8 @@ var drawDm = function(object , isTimer){
         item.color = object.data.color.replace('0x','#');
     }else if(object.info){
         item.info = object.info;
-        writelog('object.color'+object.color);
-        //item.color = object.color;
+        item.color = object.color;
+        writelog('item.color'+item.color);
     }
 
     if (object.type == 'pDanmu') {
