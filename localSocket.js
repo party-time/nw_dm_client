@@ -40,10 +40,10 @@ var startLocalSocketServer = function(callback){
     });
 
     server.on('close', function(sock) {
-        console.log('CONNECTED: ' +sock.id+
+        console.log('CONNECTED: ' +
              sock.remoteAddress +':'+ sock.remotePort);
         for(var i=0;i<localServerSocketList.length;i++){
-            if(localServerSocketList[i].id == sock.id){
+            if(localServerSocketList[i].remoteAddress == sock.remoteAddress){
                 localServerSocketList.remove(i);
             }
         }
