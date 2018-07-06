@@ -70,7 +70,8 @@ var connectLocalSocketServer = function(ip){
     });
     // 为客户端添加“close”事件处理函数
     client.on('close', function() {
-        console.log('Connection closed');
+        writelog('Connection closed');
+        getSocketIp();
     });
 }
 

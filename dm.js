@@ -194,20 +194,11 @@ var css3Barrager = function(barrage,removeCallBack){
     var screenWidth = window.innerWidth;
     var divWidth = div_barrager.width();
 
-
-
     div_barrager.on('webkitAnimationEnd', function () {
         --currentDmCount;
         if( currentDmCount<0){
             currentDmCount =0;
         }
-        var dt = divWidth/((screenWidth+divWidth)/moveTime);
-        //dt = dt - 0.12;
-        /*
-        $(this).addClass('endDanmu').css('animationDuration',dt+'s').on('webkitAnimationEnd',function(){
-
-        });
-        */
         $(this).remove();
         if( removeCallBack ){
             removeCallBack();
@@ -215,10 +206,10 @@ var css3Barrager = function(barrage,removeCallBack){
     });
 
 
-    var looper = setInterval(getBarragerX, 100);
+    var looper = setInterval(getBarragerX, 200);
     function getBarragerX(){
         var x = div_barrager.position().left;
-        if(x <= 30){
+        if(x <= 50){
             clearInterval(looper);
             //如果是局域网主机，需要像本地其他机器推送弹幕
             if(isMaster){
