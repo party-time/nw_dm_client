@@ -195,6 +195,7 @@ var css3Barrager = function(barrage,removeCallBack){
     var divWidth = div_barrager.width();
 
 
+
     div_barrager.on('webkitAnimationEnd', function () {
         --currentDmCount;
         if( currentDmCount<0){
@@ -202,22 +203,31 @@ var css3Barrager = function(barrage,removeCallBack){
         }
         var dt = divWidth/((screenWidth+divWidth)/moveTime);
         //dt = dt - 0.12;
-        writelog('div_barrager time:'+dt);
-
         /*
         $(this).addClass('endDanmu').css('animationDuration',dt+'s').on('webkitAnimationEnd',function(){
 
         });
         */
-         $(this).remove();
+        $(this).remove();
         if( removeCallBack ){
             removeCallBack();
         }
-        //如果是局域网主机，需要像本地其他机器推送弹幕
-        if(isMaster){
-            sendLocalDm(JSON.stringify(barrage));
-        }
     });
+
+
+    var looper = setInterval(getBarragerX, 200);
+    function getBarragerX(){
+        var x = div_barrager.position().left;
+        writelog('screen width:'+(screenWidth-div_barrager.width()));
+        if(x <= 50){
+            clearInterval(looper);
+            //如果是局域网主机，需要像本地其他机器推送弹幕
+            if(isMaster){
+                sendLocalDm(JSON.stringify(barrage));
+            }
+        }
+        writelog('div_barrager x:'+x);
+    }
 }
 
 
