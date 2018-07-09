@@ -146,6 +146,8 @@ var createSocket = function(ip,port){
                 if(object.data.movieTime){
                     dm_movieTime = object.data.movieTime;
                 }
+                writelog('object.data.status:'+object.data.status);
+
                 //活动开始
                 if(object.data.status == 1){
                     dm_currentParty = getParty(object.data.partyId);
