@@ -149,9 +149,10 @@ var createSocket = function(ip,port){
                 //活动开始
                 if(object.data.status == 1){
                     dm_currentParty = getParty(object.data.partyId);
-                    writelog('dm_currentParty:'+dm_currentParty);
+                    writelog('party start');
                 }else if(object.data.status == 2){//电影开始
                     //加载定时弹幕
+                    writelog('movie start dm_currentParty:'+dm_partyId);
                     timerDm(dm_partyId,1);
                 }
             }
