@@ -104,8 +104,9 @@ var drawRegistModal = function(){
             window.localStorage.setItem(_wlineKey,$('.wline').css('top'));
         }
     });
-}
 
+
+}
 
 var closeRegistModal = function(){
     $('.modal').remove();
@@ -114,17 +115,13 @@ var closeRegistModal = function(){
     $(document).unbind("mouseup");
 }
 
-var createWlineY = function(){
-
-
-}
-
 function getDiskSerialNum(callBack){
     const si = require('systeminformation');
     si.diskLayout(callBack);
 }
 
 var registClient = function(){
+    alert('registCode:'+$('#registCode').val());
     getDiskSerialNum(function (r) {
         var disCode = r[0].serialNum;
         if (disCode){
