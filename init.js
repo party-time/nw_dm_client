@@ -81,6 +81,7 @@ var drawRegistModal = function(){
 
     //增加可以拖动的白线
     var lineY = 100;
+    writelog('lineY:'+getWlineY());
     if( getWlineY()){
         lineY = getWlineY();
     }
