@@ -111,6 +111,7 @@ var closeRegistModal = function(){
     $('.modal').remove();
     $('body').css('cursor','url("/18888.cur"),auto');
     $('.wline').remove();
+    $(document).unbind("mouseup");
 }
 
 var createWlineY = function(){
