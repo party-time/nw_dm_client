@@ -199,7 +199,7 @@ var css3Barrager = function(barrage,removeCallBack){
         bottom = barrage.bottom;
     }
     div_barrager.css('bottom',bottom+'px');
-    var moveTime = 10*(1.1-_dmspeed);
+    var moveTime = 10*_dmspeed;
     div_barrager.css('animationDuration',moveTime+'s');
     div_barrager.css('font-size',_fontSize);
     ++currentDmCount;
