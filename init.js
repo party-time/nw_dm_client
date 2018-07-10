@@ -121,7 +121,6 @@ function getDiskSerialNum(callBack){
 }
 
 var registClient = function(){
-    alert('registCode:'+$('#registCode').val());
     getDiskSerialNum(function (r) {
         var disCode = r[0].serialNum;
         if (disCode){
@@ -185,6 +184,7 @@ var createSocket = function(ip,port){
              //确认活动正常开始后发出
             if(object.data.type == 'partyStatus'){
                 dm_partyId = object.data.partyId;
+
                 if(object.data.partyTime){
                     dm_partyTime = object.data.partyTime;
                 }
@@ -199,6 +199,7 @@ var createSocket = function(ip,port){
                     writelog('party start');
                 }else if(object.data.status == 2){//电影开始
                     //加载定时弹幕
+                    dm_currentParty = getParty(object.data.partyId);
                     writelog('movie start dm_currentParty:'+dm_partyId);
                     timerDm(dm_partyId,1);
                 }
