@@ -11,10 +11,10 @@ var _clientType = 3;
 //是否是局域网主机
 var isMaster = true;
 
-var configPath = './config';
+var configPath = '../config';
 
 //基本资源文件的路径
-var _baseResourcePath = './resource';
+var _baseResourcePath = '../resource';
 //定时弹幕资源路径
 var _timerDanmuPath = _baseResourcePath+'/timerDanmu';
 
