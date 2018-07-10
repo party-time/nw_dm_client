@@ -134,8 +134,7 @@ var registClient = function(){
             }).done(function (data) {
                 if(data.result == 200){
                     window.localStorage.setItem(_registCodeKey,$('#registCode').val());
-                    $('.modal').remove();
-                    $('body').css('cursor','url("/18888.cur"),auto');
+                    closeRegistModal();
                 }else{
                     alert('注册码提交失败');
                 }
