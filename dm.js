@@ -109,6 +109,19 @@ var barrager = function(barrage,removeCallBack){
 //计算弹幕的高度
 var dmBottom = function(isImg){
     var window_height = $(window).height() - 100;
+
+    var showTop=0;
+    var showBottom = window_height;
+
+    if( _windowStyle == 'top'){//在白线上方显示
+        showTop = showTop+offY;
+        showBottom = getWlineY();
+
+    }else if( _windowStyle == 'bottom'){//在白线下方显示
+        showTop = getWlineY();
+    }
+
+
     if(isImg){
 
 
@@ -116,9 +129,9 @@ var dmBottom = function(isImg){
     }else{
         if( currentDmBottom == -12345 ){
             if(_topShow){
-                currentDmBottom = window_height;
+                currentDmBottom = showBottom;
             }else{
-                currentDmBottom = 0;
+                currentDmBottom = showTop;
             }
         }else{
             if(_topShow){

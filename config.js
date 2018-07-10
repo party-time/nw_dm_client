@@ -29,7 +29,10 @@ var configStr;
 
 var _initConfigStatus = false;
 
+//本地存储code的key
 var _registCodeKey = 'rck';
+//本地存储wline的key
+var _wlineKey = 'wlinekey';
 
 //弹幕文字大小
 var _fontSize=50;
@@ -60,6 +63,15 @@ var _screenRect;
 
 //屏幕编号
 var _screen;
+
+//白线的y坐标
+var _wlineY;
+
+//所有东西的显示区域 full top bottom
+var _windowStyle = 'full';
+
+//弹幕的高度
+var _offY = 0;
 
 
 var readConfig = function( callBack ){
@@ -102,6 +114,8 @@ var initConfigParam = function(texts,callBack){
     _screenRect = object.screenRect;
 
     _screen = object.screen;
+
+    _windowStyle = object.windowStyle;
 
     if(callBack){
         callBack();

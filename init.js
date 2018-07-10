@@ -54,12 +54,21 @@ var getCode = function(){
     return window.localStorage.getItem(_registCodeKey);
 }
 
+var getWlineY = function(){
+    var y = window.localStorage.getItem(_wlineKey);
+    if( null == y){
+        return null;
+    }else{
+        return parseInt(y.replace('px',''));
+    }
+}
+
 var drawRegistModal = function(){
     var registCode = getCode();
     if( registCode == null) registCode='';
     $('body').css('cursor','auto');
-    var htmlStr = '<div class="modal"><div class="modal-body">'+
-    '<label class="control-label">注册码</label>'+
+    var htmlStr = '<div class="modal"><div class="modal-header"><button type="button" class="close" onclick="closeRegistModal()">x</button></div>'+
+    '<div class="modal-body"><label class="control-label">注册码</label>'+
     '<div class="control-div">'+
         '<input type="text" id="registCode" value="'+registCode+'"/>'+
     '</div>'+
@@ -67,8 +76,44 @@ var drawRegistModal = function(){
     '<div class="modal-footer"><button onclick="registClient()">发送</button></div>'+
     '</div>';
     $(htmlStr).appendTo($('body'));
+    var lineHtml = '<div class="wline" ></div>';
+    $(lineHtml).appendTo($('body'));
+
+    //增加可以拖动的白线
+    var lineY = 100;
+    if( getWlineY()){
+        lineY = getWlineY();
+    }
+    $('.wline').css('top',lineY+'px');
+    $('.wline').mousedown(function(e){
+        writelog('mousedown');
+        var offset = $(this).offset();
+        var y = e.pageY - offset.top;
+        $(document).bind("mousemove",function(ev){
+            $(".wline").stop();
+            var _y = ev.pageY - y;
+            $(".wline").animate({top:_y+"px"},10);
+        });
+    });
+
+    $(document).mouseup(function(){
+        $('.wline').css("cursor","default");
+        $(this).unbind("mousemove");
+        window.localStorage.setItem(_wlineKey,$('.wline').css('top'));
+    });
 }
 
+
+var closeRegistModal = function(){
+    $('.modal').remove();
+    $('body').css('cursor','url("/18888.cur"),auto');
+    $('.wline').remove();
+}
+
+var createWlineY = function(){
+
+
+}
 
 function getDiskSerialNum(callBack){
     const si = require('systeminformation');
