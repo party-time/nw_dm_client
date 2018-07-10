@@ -100,7 +100,9 @@ var drawRegistModal = function(){
     $(document).mouseup(function(){
         $('.wline').css("cursor","default");
         $(this).unbind("mousemove");
-        window.localStorage.setItem(_wlineKey,$('.wline').css('top'));
+        if($('.wline')){
+            window.localStorage.setItem(_wlineKey,$('.wline').css('top'));
+        }
     });
 }
 
