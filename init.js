@@ -87,7 +87,6 @@ var drawRegistModal = function(){
     }
     $('.wline').css('top',lineY+'px');
     $('.wline').mousedown(function(e){
-        writelog('mousedown');
         var offset = $(this).offset();
         var y = e.pageY - offset.top;
         $(document).bind("mousemove",function(ev){
@@ -98,6 +97,7 @@ var drawRegistModal = function(){
     });
 
     $(document).mouseup(function(){
+        writelog('mouseup');
         $('.wline').css("cursor","default");
         $(this).unbind("mousemove");
         if($('.wline')){
