@@ -1,0 +1,46 @@
+body {
+    background-color:#000;
+}
+
+.danmuText {
+    text-align:center;
+    color:rgb(255,255,255);
+    font-size: 50px;
+    font-family: 黑体;
+    position:absolute;
+}
+
+.first {
+    width:600px;
+    margin:300px auto auto;
+    transform-origin:0 100%;
+}
+
+.second {
+    width:600px;
+    margin:50px auto auto;
+    transform-origin:0 100%;
+}
+
+.leftRotate{
+    animation:circling 1s linear forwards 1;
+}
+
+@keyframes circling{
+    from{
+      transform:rotate(0deg);
+    }
+    to{
+      transform:rotate(-90deg);
+    }
+}
+
+@-webkit-keyframes anticlockwiseRotate{
+    to {
+        transform:rotate(-90deg);
+    }
+}
+
+.anticlockwise{
+    -webkit-animation:anticlockwiseRotate 1s forwards 1;
+}
