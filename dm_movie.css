@@ -4,16 +4,16 @@ body {
 
 .danmuText {
     text-align:center;
-    color:rgb(255,255,255);
-    font-size: 50px;
-    font-family: 黑体;
+    font-family: YouYuan;
     position:absolute;
+    font-weight:900;
 }
 
 .first {
     width:600px;
-    margin:300px auto auto;
+    margin:400px auto auto;
     transform-origin:0 100%;
+
 }
 
 .second {
