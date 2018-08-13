@@ -1,26 +1,42 @@
 body {
     background-color:#000;
+    text-align:center;
+    margin:0 auto;
+    margin-left: 40%;
 }
 
 .danmuText {
-    text-align:center;
     font-family: YouYuan;
-    position:absolute;
     font-weight:900;
 }
 
-.first {
-    width:600px;
-    margin:400px auto auto;
-    transform-origin:0 100%;
-
+.paragraph {
+    text-align:left;
+    transform-origin:0 0;
 }
 
-.second {
-    width:600px;
-    margin:50px auto auto;
-    transform-origin:0 100%;
+.turnDiv{
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
+
+.turnDiv::-webkit-scrollbar {
+    display: none;
+}
+
+.divZoomOut{
+    animation:divZoomOutIng 0.5s linear forwards 1;
+}
+
+@keyframes divZoomOutIng{
+    from{
+      transform:scale(1);
+    }
+    to{
+      transform:scale(1.5);
+    }
+}
+
 
 .leftRotate{
     animation:circling 1s linear forwards 1;

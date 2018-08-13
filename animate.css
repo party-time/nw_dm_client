@@ -3557,6 +3557,30 @@
   animation-name: slideOutUp;
 }
 
+.divZoom{
+    -webkit-animation-name:divZoomIng;
+    animation-name:divZoomIng;
+}
+
+@-webkit-keyframes divZoomIng{
+    from{
+      transform:scale3d(1,1,1);
+    }
+    to{
+      transform:scale3d(0.8,0.8,0.8);
+    }
+}
+
+@keyframes divZoomIng{
+    from{
+      transform:scale3d(1,1,1);
+    }
+    to{
+      transform:scale3d(0.8,0.8,0.8);
+    }
+
+}
+
 .animated {
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
